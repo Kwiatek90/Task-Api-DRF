@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from . import models, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -6,6 +5,11 @@ from rest_framework import status
 from django.db.models import Q
 from datetime import datetime
 from django.utils import timezone
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import AbstractUser
+from rest_framework.authtoken.models import Token
+
 
 
 class TaskViewSet(APIView):
@@ -42,7 +46,7 @@ class TaskViewSet(APIView):
             serializer.save()
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
         else:
-            return Response({"status": "success", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": "failed", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         
     def patch(self, request, task_id=None):
         '''Edycja rekordów''' 
@@ -52,7 +56,7 @@ class TaskViewSet(APIView):
             serializer.save()
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
         else:
-            return Response({"status": "success", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": "failed", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request, task_id=None):
         item = models.Task.objects.filter(task_id=task_id)
@@ -95,5 +99,21 @@ class TaskHistoryView(APIView):
         serializer = serializers.HistorySerializer(history, many=True)
         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
         
+class UserSignUpViewSet(APIView):
+    
+    def post(self, request):
+        serializer = serializers.UserSerializer(data=request.data)
+        if serializer.is_vaild():
+            serializer.save()
+            user = AbstractUser.objects.get(username=request.data['username'])
+            user.set_password(request.data['password'])
+            user.save()
+            token = Token.objects.create(user=user)
+            return Response({"status": "success", 'token': token.key, "data": serializer.data}, status=status.HTTP_200_OK)
+        return Response({"status": "failed", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserLoginViewSer(APIView):
+    #tearz tud odac
+    pass
 
 
