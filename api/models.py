@@ -1,22 +1,21 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, Group, Permission, BaseUserManager
 from simple_history.models import HistoricalRecords
 from django.utils import timezone
 
 class User(AbstractUser):
-    #Dziedziczy pola username i password
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    phone_number = models.CharField(blank=True, max_length=15, null=True)
     groups = models.ManyToManyField(Group, related_name='custom_user_groups', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='custom_user_permissions', blank=True)
-
-# Tworzenie schematu tabel
+    
+    
 class Task(models.Model):
     task_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, blank=False, null=False)
     description = models.TextField(max_length=255, blank=True, null=True)
     status_choices = [('New', 'New'), ('In progress', 'In progress'), ('Completed', 'Completed')]
     status = models.CharField(max_length=20, choices=status_choices, default='New')
-    executing_user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+    executing_user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)#tu zmienic z id na username
     history = HistoricalRecords()
     
     @property

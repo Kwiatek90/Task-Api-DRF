@@ -1,11 +1,12 @@
 from django.urls import path
-from .views import TaskViewSet, TaskHistoryView, UserSignUpViewSet
+from .views import TaskViewSet, TaskHistoryView, UserSignUpViewSet, UserLoginViewSet 
+from rest_framework.authtoken import views
 
-#tu są patterny skrótów hhtp endpointów
 
 urlpatterns = [
     path('register/', UserSignUpViewSet.as_view()),
-    #path('login/', UserLoginView.as_view(), name='user-login'),
+    path('login/', UserLoginViewSet.as_view()),
+    path('api-token-auth/', views.obtain_auth_token),
     path('tasks/', TaskViewSet.as_view()),
     path('tasks/<int:task_id>/', TaskViewSet.as_view()),
     path('tasks/<int:task_id>/history/', TaskHistoryView.as_view()),  

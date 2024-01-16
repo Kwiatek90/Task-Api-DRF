@@ -1,18 +1,22 @@
 from . import models, serializers
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
 from datetime import datetime
 from django.utils import timezone
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from django.contrib.auth import authenticate, login
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.models import AbstractUser
+
 from rest_framework.authtoken.models import Token
 
 
 
 class TaskViewSet(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request ,task_id=None):
         '''Wyświetlanie rekordu lub wszytskich rekordów'''
@@ -98,22 +102,32 @@ class TaskHistoryView(APIView):
 
         serializer = serializers.HistorySerializer(history, many=True)
         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
-        
+ #działą       
 class UserSignUpViewSet(APIView):
     
     def post(self, request):
         serializer = serializers.UserSerializer(data=request.data)
-        if serializer.is_vaild():
+        if serializer.is_valid():
             serializer.save()
-            user = AbstractUser.objects.get(username=request.data['username'])
+            user = models.User.objects.get(username=request.data['username'])
             user.set_password(request.data['password'])
             user.save()
             token = Token.objects.create(user=user)
             return Response({"status": "success", 'token': token.key, "data": serializer.data}, status=status.HTTP_200_OK)
         return Response({"status": "failed", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-class UserLoginViewSer(APIView):
-    #tearz tud odac
-    pass
 
+class UserLoginViewSet(APIView):
+    
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(request, username=username, password=password)
 
+        if user:
+            login(request, user)
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({"status": "success", 'token': token.key, "data": serializers.UserSerializer(user).data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status": "failed", "data": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        
