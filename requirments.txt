@@ -1,3 +1,5 @@
 django
 simple_history
 rest_framework
+pytest
+pytest-django
