@@ -1,1 +1,10 @@
-__pycache
+.benchmarks
+.pytest_cache
+.vscode
+TaskApp\__pycache__
+TaskApp\.benchmarks
+TaskApp\.pytest_cache
+TaskApp\api\__pycache__
+TaskApp\api\migrations
+TaskApp\core\__pycache__
+TaskApp\tests\__pycache__

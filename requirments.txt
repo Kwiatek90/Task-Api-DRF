@@ -1,5 +1,6 @@
 django
 simple_history
-rest_framework
+django_rest_framework
 pytest
 pytest-django
+gunicorn

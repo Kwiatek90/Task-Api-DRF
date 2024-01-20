@@ -12,7 +12,7 @@ class Task(models.Model):
     description = models.TextField(max_length=255, blank=True, null=True)
     status_choices = [('New', 'New'), ('In progress', 'In progress'), ('Completed', 'Completed')]
     status = models.CharField(max_length=20, choices=status_choices, default='New')
-    executing_user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)#tu zmienic z id na username
+    executing_user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     history = HistoricalRecords()
     
     @property

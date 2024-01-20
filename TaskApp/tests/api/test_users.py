@@ -80,6 +80,21 @@ def test_login_user_fail():
     response = client.post("/api/login/", log_dict)
     data = response.data
     
-    assert data["status"] == "failed"
+    assert data["Status"] == "failed"
+
+@pytest.mark.django_db  
+def test_logout_user():
+    payload = {
+        "username": "TestUser",
+        "password": "TestUser",
+    }
+    
+    client.post("/api/register/", payload)
+    client.post("/api/login/", payload)
+    response = client.post("/api/logout/")
+    data = response.data
+    
+    assert data["Status"] == "success"
+    
     
     

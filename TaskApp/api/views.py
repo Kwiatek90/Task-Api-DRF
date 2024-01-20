@@ -7,7 +7,7 @@ from django.db.models import Q
 from datetime import datetime
 from django.utils import timezone
 from django.contrib.auth import authenticate, login
-from rest_framework.authentication import SessionAuthentication, IsAuthenticated
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.authtoken.models import Token
 
@@ -23,17 +23,17 @@ class TaskViewSet(APIView):
             serializer = serializers.TaskSerializer(item)
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
         
-        user_id = request.query_params.get('user_id')   
+        executing_user = request.query_params.get('executing_user')   
         task_status = request.query_params.get('status')
         keyword = request.query_params.get('keyword')
         
         query = models.Task.objects.all()    
             
-        if user_id:
-            query = query.filter(executing_user=user_id)
-        if task_status:
+        if executing_user:
+            query = query.filter(executing_user=executing_user)
+        elif task_status:
             query = query.filter(status=task_status)
-        if keyword:
+        elif keyword:
             query = query.filter(Q(name__icontains=keyword) | Q(description__icontains=keyword))
         else:
             query = models.Task.objects.all()    
@@ -66,6 +66,9 @@ class TaskViewSet(APIView):
         return Response({"status": "success", "data": "Item Deleted"})
     
 class TaskHistoryView(APIView):
+    queryset = models.Task.objects.all()
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [DjangoModelPermissions]
     
     def get(self, request, task_id=None, history_id=None):
         '''Pobieranie historii zmian dla zadań'''
@@ -124,14 +127,18 @@ class UserLoginViewSet(APIView):
         if user:
             login(request, user)
             token, created = Token.objects.get_or_create(user=user)
-            return Response({"status": "success", 'token': token.key, "data": serializers.UserSerializer(user).data}, status=status.HTTP_200_OK)
+            return Response({"Status": "success", 'token': token.key, "data": serializers.UserSerializer(user).data}, status=status.HTTP_200_OK)
         else:
-            return Response({"status": "failed", "data": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"Status": "failed", "data": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         
 class UserLogoutViewSet(APIView):
     
+    authentication_classes = [SessionAuthentication]
     
-    def get(self, request):
-        request.user.token.delete()
-        return Response(status=status.HTTP_200_OK)
-        
+    def post(self, request):
+        try:
+            print(request.user)
+            request.user.auth_token.delete()
+            return Response({"Status": "success", 'Message': 'Successfully logged out.',}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"Status": "failed", "Error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
