@@ -4,7 +4,11 @@
 /TaskApp/__pycache__
 /TaskApp/.benchmarks
 /TaskApp/.pytest_cache
-/TaskApp/api\__pycache__
-/TaskApp/api\migrations
-/TaskApp/core\__pycache__
-/TaskApp/tests\__pycache__
+/TaskApp/api/__pycache__
+/TaskApp/api/migrations
+/TaskApp/core/__pycache__
+/TaskApp/tests/__pycache__
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
