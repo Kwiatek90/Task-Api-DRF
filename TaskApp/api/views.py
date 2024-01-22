@@ -131,14 +131,3 @@ class UserLoginViewSet(APIView):
         else:
             return Response({"Status": "failed", "data": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         
-class UserLogoutViewSet(APIView):
-    
-    authentication_classes = [TokenAuthentication]
-    
-    def post(self, request):
-        try:
-            print(request.user)
-            request.user.auth_token.delete()
-            return Response({"Status": "success", 'Message': 'Successfully logged out.',}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"Status": "failed", "Error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

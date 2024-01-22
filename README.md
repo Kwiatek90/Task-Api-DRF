@@ -1,5 +1,14 @@
 # Task App
 
+## Spis treści
+* [Wstęp](#Wstęp)
+* [Setup](#setup)
+* [Przykładowe komendy CURL](#Przykładowe-komendy-CURL)
+* [Końcówki HTTP API Endpoints](#Końcówki-HTTP-API-Endpoints)
+* [Wideo](#Wideo)
+* [Zastosowane technologie i biblioteki](#Zastosowane-technologie-i-biblioteki)
+* [Licencja](#Licencja)
+
 ## Wstęp
 
 Api stworzone do zarządzania zadaniami, które umożliwia rejestrację użytkowników, logowanie, dodawanie, przeglądanie, aktualizację i usuwanie zadań, a także zarządzanie nimi. To API zostało stworzone przy użyciu technologii PostgreSQL do przechowywania danych, Docker do konteneryzacji, Gunicorn jako serwera HTTP do obsługi aplikacji Python oraz Nginx jako serwera HTTP i proxy odwrotnego, zapewniającego bezpieczne i efektywne przetwarzanie żądań.
@@ -8,31 +17,27 @@ Api stworzone do zarządzania zadaniami, które umożliwia rejestrację użytkow
 
 Uruchomienie projektu:
 
-1. Tworzymy build kontenera
+1. Sprawdź plik .env.prod i skonfiguruj go pod siebie
+
+2. Tworzymy build kontenerów
 
     ```bash
     docker-compose -f docker-compose.prod.yml up -d --build
     ```
 
-2. Tworzymy migracje danych
+3. Tworzymy migracje danych
 
     ```bash
     docker-compose exec web python manage.py migrate --noinput
     ```
 
-3. Kopiujemy pliki statyczne
+4. Kopiujemy pliki statyczne
 
     ```bash
     docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input --clear
     ```
 
-4. Aplikacja uruchamia nam się na [http://localhost:1337/api/tasks/](http://localhost:1337/api/tasks/)
-
-5. Zatrzymujemy kontenery
-
-    ```bash
-    docker compose -f docker-compose.prod.yml down -v
-    ```
+5. Aplikacja uruchamia nam się na [http://localhost:1337/api/tasks/](http://localhost:1337/api/tasks/)
 
 6. Uruchamiamy terminal bash:
 
@@ -46,10 +51,16 @@ Uruchomienie projektu:
     pytest
     ```
 
-8. Logujemy się do bazy danych
+8. Komenda do logowania się do bazy danych:
 
     ```bash
     docker-compose exec db psql --username=admin --dbname=admin
+    ```
+
+9. Jeśli chcemy zatrzymać kontenery:
+
+    ```bash
+    docker compose -f docker-compose.prod.yml down -v
     ```
 
 ## Przykładowe komendy CURL
@@ -63,7 +74,7 @@ Uruchomienie projektu:
 - Pobieranie zadań:
 
     ```bash
-    curl -X GET -H "Authorization: Token {token}" http://localhost:1337/api/tasks/
+    curl -X GET -H "Authorization: Token {token}" http://localhost:8000/api/tasks/
     ```
 
 - Dodawanie zadania:
@@ -94,10 +105,6 @@ Uruchomienie projektu:
         - Parametry żądania:
             - username - Nazwa użytkownika
             - password - Hasło użytkownika
-
-- [http://localhost:1337/logout/](http://localhost:1337/logout/)
-    - Metoda: POST
-        - Wylogowuje użytkownika
 
 - [http://localhost:1337/api/tasks/](http://localhost:1337/api/tasks/)
     - Metoda: POST
@@ -140,18 +147,18 @@ Uruchomienie projektu:
 
 ## Wideo
 
-[Link do wideo]
+https://youtu.be/A89ODGeweAg
 
 ## Zastosowane technologie i biblioteki
 
-### Environment
+### Technologie
 - Python 3.11.4
 - Visual Studio Code 1.79
 - Docker 24.0.7
 - PostgreSQL 16.1
 - Nginx 1.25.3
 
-### Libraries
+### Biblioteki
 - Django 5.0.1
 - django-simple-history 3.4.0
 - djangorestframework 3.14.0

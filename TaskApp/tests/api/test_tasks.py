@@ -90,4 +90,4 @@ def test_task_view_create_not_authenticated_user():
     
     response = client.post("/api/tasks/", {"name": "Task", "description": "Example task",})
     
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED

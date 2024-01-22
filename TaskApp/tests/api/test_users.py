@@ -1,8 +1,15 @@
 import pytest
 from rest_framework.test import APIClient
-#py -m pytest
+from api.models import User
 
 client = APIClient()
+
+@pytest.fixture
+def authenticated_user(db):
+    user = User.objects.create_user(username='testuser', password='testpassword')
+    client = APIClient()
+    client.force_authenticate(user=user)
+    return client, user
 
 @pytest.mark.django_db
 def test_register_user():
@@ -25,7 +32,8 @@ def test_register_user():
     assert data["data"]["last_name"] == payload["last_name"]
     assert data["data"]["last_name"] == f"{payload['last_name']}"
     assert "password" not in data
-    
+  
+@pytest.mark.django_db    
 def test_register_user_fail():
     payload = {
         "password": "TestUser",
@@ -82,19 +90,5 @@ def test_login_user_fail():
     
     assert data["Status"] == "failed"
 
-@pytest.mark.django_db  
-def test_logout_user():
-    payload = {
-        "username": "TestUser",
-        "password": "TestUser",
-    }
-    
-    client.post("/api/register/", payload)
-    client.post("/api/login/", payload)
-    response = client.post("/api/logout/")
-    data = response.data
-    
-    assert data["Status"] == "success"
-    
     
     
