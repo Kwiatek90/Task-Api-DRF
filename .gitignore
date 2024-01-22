@@ -5,9 +5,11 @@
 /TaskApp/.benchmarks
 /TaskApp/.pytest_cache
 /TaskApp/api/__pycache__
-/TaskApp/api/migrations
 /TaskApp/core/__pycache__
 /TaskApp/tests/__pycache__
+.env.prod.db
+.env.prod
+.env.dev
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

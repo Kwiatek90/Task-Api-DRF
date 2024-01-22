@@ -22,4 +22,3 @@ class Task(models.Model):
     @_history_date.setter
     def _history_date(self, value):
         self.__history_date = timezone.localtime(value)
-    

@@ -1,7 +1,5 @@
 import pytest
-from rest_framework.serializers import ValidationError
-from api.models import Task, User
-from api.serializers import UserSerializer, TaskSerializer, HistorySerializer
+from api.serializers import UserSerializer, TaskSerializer
 
 @pytest.fixture
 def user_data():

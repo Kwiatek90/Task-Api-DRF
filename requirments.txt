@@ -1,6 +1,0 @@
-django
-simple_history
-django_rest_framework
-pytest
-pytest-django
-gunicorn
