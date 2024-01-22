@@ -17,47 +17,53 @@ To API zostało stworzone przy użyciu technologii PostgreSQL do przechowywania 
 ## Setup
 
 Uruchomienie projeku:
-
+```
 Tworzymy build kontenera
-'''
+```
 docker-compose -f docker-compose.prod.yml up -d --build
-'''
+```
 
 Tworzymy migracje danych
 
-'docker-compose exec web python manage.py migrate --noinput'
+```docker-compose exec web python manage.py migrate --noinput```
 
 
 Kopiujemy pliki statyczne
-'''
+```
 docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input --clear
-'''
+```
 
 Aplikacja uruchamia nam się na http://localhost:1337/api/tasks/
 
 Zatrzymanie kontenerów
-'''
+```
 docker compose -f docker-compose.prod.yml down -v
-'''
+```
 
 Uruchomienie terminalu bash:
-
-'docker compose exec -it PIERWSZE TRZY LITERY CONTAINER ID bash'
+```docker compose exec -it PIERWSZE TRZY LITERY CONTAINER ID bash```
 
 Uruchomienie testów w terminalu bash:
 
-'pytest'
+```pytest```
 
 Logowanie się do bazy danych
-'''
+```
 docker-compose exec db psql --username=admin --dbname=admin
-'''
+```
 
 
 ## Przykładowe komendy CURL
 
-curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "password": "admin"}' http://localhost:1337/api/login/
-curl -H "Authorization: Token {token}" http://localhost:1337/api/tasks/
+Logowanie użytkownika:
+```curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "password": "admin"}' http://localhost:8000/api/login/```
+
+Pobieranie zadań:
+```curl -X GET -H "Authorization: Token {token}" http://localhost:1337/api/tasks/```
+
+Dodowania zadania:
+```curl -X POST -H "Content-Type: application/json" -H "Authorization: Token {token}" -d '{"name": "Przykładowe zadanie", "description": "opis zadania", "executing_user": 1}' http://localhost:8000/api/tasks/
+
 
 ## Końcówki HTTP API Endpoints
 

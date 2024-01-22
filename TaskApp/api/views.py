@@ -7,13 +7,13 @@ from django.db.models import Q
 from datetime import datetime
 from django.utils import timezone
 from django.contrib.auth import authenticate, login
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.authtoken.models import Token
 
 class TaskViewSet(APIView):
     queryset = models.Task.objects.all()
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [DjangoModelPermissions]
     
     def get(self, request ,task_id=None):
@@ -67,7 +67,7 @@ class TaskViewSet(APIView):
     
 class TaskHistoryView(APIView):
     queryset = models.Task.objects.all()
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [DjangoModelPermissions]
     
     def get(self, request, task_id=None, history_id=None):
@@ -133,7 +133,7 @@ class UserLoginViewSet(APIView):
         
 class UserLogoutViewSet(APIView):
     
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     
     def post(self, request):
         try:
