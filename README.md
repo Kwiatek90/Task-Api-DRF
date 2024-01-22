@@ -39,6 +39,7 @@ Zatrzymanie kontenerów
 ```docker compose -f docker-compose.prod.yml down -v```
 
 Uruchomienie terminalu bash:
+
 ```docker compose exec -it PIERWSZE TRZY LITERY CONTAINER ID bash```
 
 Uruchomienie testów w terminalu bash:
@@ -54,12 +55,15 @@ Logowanie się do bazy danych
 ## Przykładowe komendy CURL
 
 Logowanie użytkownika:
+
 ```curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "password": "admin"}' http://localhost:8000/api/login/```
 
 Pobieranie zadań:
+
 ```curl -X GET -H "Authorization: Token {token}" http://localhost:1337/api/tasks/```
 
 Dodowania zadania:
+
 ```curl -X POST -H "Content-Type: application/json" -H "Authorization: Token {token}" -d '{"name": "Przykładowe zadanie", "description": "opis zadania", "executing_user": 1}' http://localhost:8000/api/tasks/```
 
 
